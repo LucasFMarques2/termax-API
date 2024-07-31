@@ -3,7 +3,7 @@ const knex = require("../database/knex")
 class NotesController {
   async create(request, response) {
     const { title, description, tags, links } = request.body
-    const { user_id } = request.params
+    const user_id  = request.user.id;
 
     const [note_id] = await knex("notes").insert({
       title,
@@ -34,7 +34,7 @@ class NotesController {
   }
 
   async show(request, response) {
-    const { id } = request.params
+    const {id} = request.params
 
     const note = await knex("notes").where({ id }).first()
     const tags = await knex("tags").where({ note_id: id }).orderBy("name")
@@ -48,13 +48,15 @@ class NotesController {
   }
 
  async delete(req,res){
-  const { id } = req.params;
-  await knex("notes").where({id}).delete();
+  const {id} = req.params;
+
+  await knex("notes").where({id }).delete();
   res.json();
  }
 
  async index(req,res){
-    const {user_id, title, tags} = req.query;
+    const { title, tags} = req.query;
+    const user_id = req.user.id
     let notes;
 
     if(tags){
