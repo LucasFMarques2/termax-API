@@ -1,23 +1,32 @@
 const { verify } = require("jsonwebtoken");
 const AppError = require("../utils/AppError");
 const authConfig = require("../configs/auth");
+const knex = require("../database/knex"); 
 
-function ensureAuthenticated(req, res, next){
+async function ensureAuthenticated(req, res, next) {
     const authHeader = req.headers.authorization;
-
-    if(!authHeader){
+    if (!authHeader) {
         throw new AppError("JSW token não encontrado", 401);
     }
 
-    const [, token] =authHeader.split(" ");
+    const [, token] = authHeader.split(" "); 
 
-    try{
-        const {sub: user_id} = verify(token, authConfig.jwt.secret);
+    try {
+        const { sub: user_id } = verify(token, authConfig.jwt.secret);
+        const user = await knex("users").where({ id: user_id }).first();
+
+        if (!user) {
+            throw new AppError("Usuário não encontrado", 404);
+        }
+
         req.user = {
             id: Number(user_id),
+            isAdmin: user.isAdmin, 
         };
+
         return next();
-    }catch{
+    } catch (error) {
+
         throw new AppError("JSW token inválido", 401);
     }
 }

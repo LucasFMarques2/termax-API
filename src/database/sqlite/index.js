@@ -4,7 +4,7 @@ const path = require("path")
 
 async function sqlConnection(){
     const database = await sqlite.open({
-        filename: path.resolve(__dirname, "..", "rocketNote.db"),
+        filename: path.resolve(__dirname, "..", "maluPad.db"),
         driver: sqlite3.Database
     });
 
