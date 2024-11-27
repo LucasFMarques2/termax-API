@@ -43,13 +43,13 @@ class abastecimentoController {
     return response.json(abastecimentos);
   }
 
-  async delete(req, res) {
-    const { id } = req.params;
+  // async delete(req, res) {
+  //   const { id } = req.params;
 
-    await knex("abastecimento").where({ id }).delete();
+  //   await knex("abastecimento").where({ id }).delete();
 
-    return res.status(200).json({ message: "Registro deletado com sucesso" });
-  }
+  //   return res.status(200).json({ message: "Registro deletado com sucesso" });
+  // }
 }
 
 module.exports = abastecimentoController;
